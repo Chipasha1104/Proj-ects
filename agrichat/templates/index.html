@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #chatbox {
+            background-color: #fff;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatbox input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        #chatbox button {
+            padding: 10px 15px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #chatbox button:hover {
+            background-color: #34495e;
+        }
+
+        .message {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .message.user {
+            background-color: #3498db;
+            color: white;
+            text-align: right;
+        }
+
+        .message.bot {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .upload-section {
+            margin: 30px auto;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .upload-section input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 50%;
+        }
+
+        .upload-section button {
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .upload-section button:hover {
+            background-color: #c0392b;
+        }
+
+        .response-message {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Agriculture Chatbot</h1>
+    <p>Your friendly agricultural assistant</p>
+</header>
+
+<div id="chatbox">
+    <div id="chat-history"></div>
+    <div>
+        <input type="text" id="user-input" placeholder="Type your message here...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<div class="upload-section">
+    <h2>Upload a Plant Image for Disease Detection</h2>
+    <input type="file" id="file-input">
+    <button onclick="uploadImage()">Upload</button>
+    <div class="response-message" id="response-message"></div>
+</div>
+
+<script>
+    async function sendMessage() {
+        const userInput = document.getElementById("user-input").value;
+        if (!userInput) return;
+
+        // Append user message to chat history
+        const chatHistory = document.getElementById("chat-history");
+        chatHistory.innerHTML += `<div class="message user">${userInput}</div>`;
+
+        // Send the message to the server and get the bot response
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: userInput })
+        });
+
+        const data = await response.json();
+        const botResponse = data.response;
+
+        // Append bot response to chat history
+        chatHistory.innerHTML += `<div class="message bot">${botResponse}</div>`;
+
+        // Scroll to the bottom of chat history
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        document.getElementById("user-input").value = '';  // Clear input field
+    }
+
+    async function uploadImage() {
+        const fileInput = document.getElementById("file-input").files[0];
+        const responseMessage = document.getElementById("response-message");
+        if (!fileInput) {
+            responseMessage.textContent = "Please select an image file to upload.";
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", fileInput);
+
+        // Show loading message
+        responseMessage.textContent = "Uploading image and analyzing...";
+
+        // Send image file to the server for disease detection
+        const response = await fetch("/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+        if (data.result) {
+            responseMessage.textContent = data.result;
+        } else {
+            responseMessage.textContent = data.error || "An error occurred.";
+        }
+    }
+</script>
+
+</body>
+</html>
