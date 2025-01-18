@@ -5,8 +5,9 @@
 - 📫 How to reach me Cuthbertmwelwa@gmail.com
 - - 😄 Pronouns: ...
 - ⚡ Fun fact: i'm a people person
+# My Awesome Project
 
-<!---
-Asha1104/Asha1104 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+Welcome to my awesome project! 
+
+[Check out my project here](https://carrauonline.online/)
+
