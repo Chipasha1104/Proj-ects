@@ -1,4 +1,4 @@
-- 👋 Hi, I’m @Asha1104
+- 👋 Hi, I’m @Chipasha1104
 - 👀 I’m interested in writing code as well as business'
 - 🌱 I’m currently learning python
 - 💞️ I’m looking to collaborate on finance tech projects
